@@ -148,7 +148,7 @@ const UserList = () => {
 
             <div className='card mt-5'>
 
-                <h2 className='text-center items-center justify-center my-10 py-16 sm:py-32 md:flex-row md:space-x-4 md:text-left md:py-52 card-title'>Ajoutez un utilisateur</h2>
+                <h2 className='text-center items-center justify-center my-10 py-16 sm:py-32 md:flex-row md:space-x-4 md:text-left md:py-52 card-title'>Ajoutez un témoignage</h2>
 
                 <div className='card-body'>
 
