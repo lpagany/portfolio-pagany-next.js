@@ -5,7 +5,6 @@ import React, { useState } from "react";
 const MobileHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Function to toggle the menu
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
   };
@@ -22,7 +21,7 @@ const MobileHeader = () => {
             {isMenuOpen ? "Close Menu" : "Menu"}
           </button>
         </div>
-        {isMenuOpen && ( // Show the navigation links when the menu is open
+        {isMenuOpen && (
           <ul style={{ display: "flex", justifyContent: "space-around" }}>
             <li>
               <Link href="/">Home</Link>

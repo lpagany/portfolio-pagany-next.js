@@ -5,9 +5,6 @@ import Footer from '@/components/Footer'
 import StoreProvider from '@/components/StoreProvider'
 import Projets from './projets/page'
 
-
-
-
 const inter = Inter({ subsets: ['latin'] })
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'

@@ -1,4 +1,4 @@
-'use client'
+/*'use client'
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -9,7 +9,7 @@ import {
 import TestimonialCard from "../../components/TestimonialCard";
 import TestimonialForm from "../../components/TestimonialForm";
 
-const Temoignages = () => {
+/*const Temoignages = () => {
   const testimonials = useSelector((state) => state.testimonials);
   const dispatch = useDispatch();
 
@@ -80,4 +80,4 @@ const Temoignages = () => {
 };
 
 export default Temoignages;
-
+*/

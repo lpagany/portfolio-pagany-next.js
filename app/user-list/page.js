@@ -1,131 +1,219 @@
 'use client'
-import React, { useState } from "react";
-import Head from "next/head";
 
-const Temoignages = () => {
-  const [temoignages, setTemoignages] = useState([
-    {
-      id: 1,
-      contenu: "Ceci est un témoignage.",
-    },
-    {
-      id: 2,
-      contenu: "Ceci est un autre témoignage.",
-    },
-  ]);
+import { useState } from "react";
 
-  const [formData, setFormData] = useState({
-    contenu: "",
-  });
+import { useDispatch, useSelector } from "react-redux";
 
-  const [editId, setEditId] = useState(null);
+import { useRouter } from "next/navigation";
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+import { addUser, getUser, deleteUser } from "@/store/reducers/userReducer";
 
-  const ajouterTemoignage = () => {
-    const nouveauTemoignage = {
-      id: temoignages.length + 1,
-      contenu: formData.contenu,
-    };
-    setTemoignages([...temoignages, nouveauTemoignage]);
-    setFormData({ contenu: "" });
-  };
+const UserList = () => {
 
-  const modifierTemoignage = () => {
-    const temoignagesModifies = temoignages.map((temoignage) =>
-      temoignage.id === editId ? { ...temoignage, contenu: formData.contenu } : temoignage
-    );
-    setTemoignages(temoignagesModifies);
-    setFormData({ contenu: "" });
-    setEditId(null);
-  };
+    const dispatch = useDispatch()
 
-  const supprimerTemoignage = (id) => {
-    const temoignagesFiltres = temoignages.filter(
-      (temoignage) => temoignage.id !== id
-    );
-    setTemoignages(temoignagesFiltres);
-  };
+    const router = useRouter()
 
-  return (
-    <div className="container mx-auto py-8">
-      <Head>
-        <title>Temoignages</title>
-      </Head>
-      <h1 className="text-4xl font-bold mb-8">Temoignages</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {temoignages.map((temoignage) => (
-          <div
-            key={temoignage.id}
-            className="bg-white shadow-md rounded p-4"
-          >
-            {editId === temoignage.id ? (
-              <div>
-                <textarea
-                  className="border border-gray-300 px-4 py-2 w-full rounded mb-2"
-                  name="contenu"
-                  value={formData.contenu}
-                  onChange={handleChange}
-                  rows="4"
-                />
-                <div className="flex justify-end space-x-2">
-                  <button
-                    className="px-4 py-2 bg-green-500 text-white rounded"
-                    onClick={modifierTemoignage}
-                  >
-                    Enregistrer
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-red-500 text-white rounded"
-                    onClick={() => setEditId(null)}
-                  >
-                    Annuler
-                  </button>
+    const users = useSelector(state => state.user.users)
+
+    const [state, setState] = useState({    // Valeurs de chaque champ de la forme
+
+        prenom: '',
+
+        nom: '',
+
+        email: '',
+
+        biographie: '',
+
+        conditions: false,
+
+    })
+
+ 
+
+    function handleChange(event) {  // Mettre a jour le champ modifie
+
+        const { name, value, checked, type } = event.target
+
+        setState(previsouState => ({ ...previsouState, [name]: type === 'checkbox' ? checked : value })) // Cas particulier du checkbox
+
+ 
+
+    }
+
+    function goToEdit(id) {   // Rediriger vers la page edit-user avec la valeur de l'element clique
+
+        dispatch(getUser(id))
+
+        router.push(`/edit-user/${id}`)
+
+    }
+
+ 
+
+    function supprimer(id) {  // Supprimer l'element clique
+
+        dispatch(deleteUser(id))
+
+    }
+
+ 
+
+    function submit(event) {
+
+        event.preventDefault() // Eviter le rafraichissement de la page ( eviter la soumission)
+
+        dispatch(addUser({ ...state, id: users.length + 1 }))
+
+        setState(prev => ({
+
+            ...prev,
+
+            prenom: '',
+
+            nom: '',
+
+            email: '',
+
+            biographie: '',
+
+            conditions: false,
+
+        }))  // Reinitialiser la forme apres la soumission
+
+    }
+
+ 
+
+    return (
+
+        <>
+
+            {users.length ? (
+
+                <>
+
+                    <h1 className="text-center items-center justify-center my-10 py-16 sm:py-32 md:flex-row md:space-x-4 md:text-left md:py-52">Liste des témoignages ajoutés</h1>
+
+                    <table className='table table-striped'>
+
+                        <thead>
+
+                            <tr>
+
+                                <td>Id</td>
+
+                                <td>Prénom</td>
+
+                                <td>Nom</td>
+
+                                <td>Email</td>
+
+                                <td>Témoignage</td>
+
+                                <td>Actions</td>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {users.map(user => <tr key={user.id}>
+
+                                <td>{user.id}</td>
+
+                                <td>{user.prenom}</td>
+
+                                <td>{user.nom}</td>
+
+                                <td>{user.email}</td>
+
+                                <td>{user.biographie}</td>
+
+                                <td><button className='btn btn-primary' onClick={() => goToEdit(user.id)}>Editer</button> <button className='btn btn-danger' onClick={() => supprimer(user.id)}>Supprimer</button></td>
+
+                            </tr>)}
+
+                        </tbody>
+
+                    </table>
+
+                </>
+
+ 
+
+            ) : ''}
+
+            <div className='card mt-5'>
+
+                <h2 className='text-center items-center justify-center my-10 py-16 sm:py-32 md:flex-row md:space-x-4 md:text-left md:py-52 card-title'>Ajoutez un utilisateur</h2>
+
+                <div className='card-body'>
+
+                    <form onSubmit={submit}>
+
+                        <div className="mb-3">
+
+                            <label className="form-label" htmlFor='prenom'>Prénom</label>
+
+                            <input className="form-control" value={state.prenom} onChange={handleChange} type='text' name='prenom' id='prenom' placeholder='Entrez votre prénom' />
+
+                        </div>
+
+                        <div className="mb-3">
+
+                            <label className="form-label" htmlFor='nom'>Nom</label>
+
+                            <input className="form-control" value={state.nom} onChange={handleChange} type='text' name='nom' id='nom' placeholder='Entrez votre nom' />
+
+                        </div>
+
+                        <div className="mb-3">
+
+                            <label className="form-label" htmlFor='email'>Email</label>
+
+                            <input className="form-control" value={state.email} onChange={handleChange} type='email' name='email' id='email' placeholder="Entrez votre email" />
+
+                        </div>
+
+                        <div className="mb-3">
+
+                            <label className="form-label" htmlFor='biographie'>Témoignage</label>
+
+                            <textarea className="form-control" value={state.biographie} onChange={handleChange} name='biographie' id='biographie' placeholder='Entrez votre témoignage'></textarea>
+
+                        </div>
+
+ 
+
+                        <div className="mb-3">
+
+                            <label className="form-label" htmlFor='conditions'>Conditions</label>
+
+                            <input className="form-check" checked={state.conditions} onChange={handleChange} type='checkbox' name='conditions' id='conditions' />
+
+                        </div>
+
+                        <button className='btn btn-success'>Soumettre</button>
+
+                    </form>
+
                 </div>
-              </div>
-            ) : (
-              <div>
-                <p>{temoignage.contenu}</p>
-                <div className="flex justify-end mt-4 space-x-2">
-                  <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
-                    onClick={() => setEditId(temoignage.id)}
-                  >
-                    Modifier
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-red-500 text-white rounded"
-                    onClick={() => supprimerTemoignage(temoignage.id)}
-                  >
-                    Supprimer
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Ajouter un témoignage</h2>
-        <textarea
-          className="border border-gray-300 px-4 py-2 w-full rounded mb-2"
-          name="contenu"
-          value={formData.contenu}
-          onChange={handleChange}
-          rows="4"
-        />
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={ajouterTemoignage}
-        >
-          Ajouter
-        </button>
-      </div>
-    </div>
-  );
-};
 
-export default Temoignages;
+ 
+
+            </div>
+
+        </>
+
+ 
+
+    )
+
+}
+
+ 
+
+export default UserList;

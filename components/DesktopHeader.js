@@ -20,7 +20,7 @@ const DesktopHeader = () => {
             <Link href="/contact">Contact</Link>
           </li>
           <li>
-            <Link href="/temoignages">Témoignages</Link>
+            <Link href="/user-list">Témoignages</Link>
           </li>
         </ul>
       </nav>
